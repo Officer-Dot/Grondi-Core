@@ -1,4 +1,4 @@
-import { canAccessModule, tenantCollectionPath } from "@/lib/domain";
+import { canAccessModule, hasCapability, tenantCollectionPath } from "@/lib/domain";
 import { describe, expect, it } from "vitest";
 
 describe("domain helpers", () => {
@@ -12,5 +12,9 @@ describe("domain helpers", () => {
 
   it("weigert medewerker voor assets module", () => {
     expect(canAccessModule("medewerker", "assets")).toBe(false);
+  });
+
+  it("geeft medewerker capability voor fotos upload", () => {
+    expect(hasCapability("medewerker", "fotos.uploaden")).toBe(true);
   });
 });

@@ -5,20 +5,33 @@ import { ReactNode } from "react";
 import { GrondiLogo } from "@/components/logo";
 import { useRuntime } from "@/components/runtime-context";
 import { useTheme } from "@/components/theme-provider";
-import { UserRole } from "@/lib/domain";
+import {
+  canAccessModule,
+  CoreModule,
+  hasCapability,
+  RoleCapability,
+  UserRole,
+} from "@/lib/domain";
 
-const links = [
+interface NavLink {
+  href: string;
+  label: string;
+  module?: CoreModule;
+  capability?: RoleCapability;
+}
+
+const links: NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/demo", label: "Demo" },
   { href: "/klant", label: "Klant" },
   { href: "/login", label: "Login" },
-  { href: "/projecten", label: "Projecten" },
-  { href: "/planning", label: "Planning" },
-  { href: "/assets", label: "Assets" },
-  { href: "/taken", label: "Taken" },
-  { href: "/uren", label: "Uren" },
-  { href: "/fotos", label: "Foto upload" },
-  { href: "/rapportage", label: "Rapportage" },
+  { href: "/projecten", label: "Projecten", module: "objecten" },
+  { href: "/planning", label: "Planning", module: "planning" },
+  { href: "/assets", label: "Assets", module: "assets" },
+  { href: "/taken", label: "Taken", module: "taken" },
+  { href: "/uren", label: "Uren", capability: "uren.registreren" },
+  { href: "/fotos", label: "Foto upload", capability: "fotos.uploaden" },
+  { href: "/rapportage", label: "Rapportage", capability: "rapportages.genereren" },
 ];
 
 const roleOptions: UserRole[] = ["medewerker", "planner", "beheerder", "admin"];
@@ -27,13 +40,29 @@ function ShellContent({ children }: { children: ReactNode }) {
   const { tenantId, userId, role, setTenantId, setUserId, setRole } = useRuntime();
   const { theme, toggleTheme } = useTheme();
 
+  const visibleLinks = links.filter((link) => {
+    if (!link.module && !link.capability) {
+      return true;
+    }
+
+    if (link.module && !canAccessModule(role, link.module)) {
+      return false;
+    }
+
+    if (link.capability && role !== "admin" && !hasCapability(role, link.capability)) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
       <header className="border-b border-neutral-200 dark:border-neutral-700">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 p-4">
           <GrondiLogo compact={false} />
           <nav className="flex flex-wrap gap-2 text-sm">
-            {links.map((link) => (
+            {visibleLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
