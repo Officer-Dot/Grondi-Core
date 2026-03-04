@@ -6,14 +6,23 @@ test("MVP smoke flow works", async ({ page }) => {
 
   await page.locator("select").first().selectOption("admin");
 
-  await page.getByRole("link", { name: "Objecten" }).click();
-  await expect(page.getByRole("heading", { name: "Objecten" })).toBeVisible();
+  await page.getByRole("link", { name: "Projecten" }).click();
+  await expect(page.getByRole("heading", { name: "Projecten" })).toBeVisible();
 
-  const uniqueName = `E2E Object ${Date.now()}`;
-  await page.getByPlaceholder("Objectnaam").fill(uniqueName);
-  await page.getByPlaceholder("Type").fill("Parken");
-  await page.getByRole("button", { name: "Object aanmaken" }).click();
-  await expect(page.getByText(uniqueName)).toBeVisible();
+  const uniqueProject = `E2E Project ${Date.now()}`;
+  await page.getByPlaceholder("Projectnaam").fill(uniqueProject);
+  await page.getByPlaceholder("Omschrijving").fill("Gemeente E2E");
+  await page
+    .getByPlaceholder("Toegang gebruikers IDs (comma separated)")
+    .fill("usr-001");
+
+  const map = page.locator(".leaflet-container").first();
+  await map.click({ position: { x: 80, y: 80 } });
+  await map.click({ position: { x: 180, y: 80 } });
+  await map.click({ position: { x: 130, y: 160 } });
+
+  await page.getByRole("button", { name: "Project aanmaken" }).click();
+  await expect(page.getByText(/Project opgeslagen|Project lokaal toegevoegd/)).toBeVisible();
 
   await page.getByRole("link", { name: "Taken" }).click();
   await expect(page.getByRole("heading", { name: "Taken" })).toBeVisible();

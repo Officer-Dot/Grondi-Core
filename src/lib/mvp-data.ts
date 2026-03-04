@@ -1,33 +1,86 @@
-import { AssetItem, ObjectItem, TaskItem } from "@/lib/domain";
+import { AssetItem, ObjectItem, ProjectItem, TaskItem } from "@/lib/domain";
 
 const now = new Date().toISOString();
 
 export const initialObjects: ObjectItem[] = [
   {
     id: "obj-001",
+    projectId: "prj-eemshaven",
     tenantId: "demo-tenant",
     createdAt: now,
     updatedAt: now,
     name: "Sportveld Noord",
     type: "Sportvelden",
     status: "actief",
+    polygon: [
+      { lat: 53.4415, lng: 6.8382 },
+      { lat: 53.4412, lng: 6.8394 },
+      { lat: 53.4403, lng: 6.8391 },
+      { lat: 53.4406, lng: 6.8380 },
+    ],
     historie: ["Inspectie uitgevoerd"],
     fotos: [],
     onderhoudslog: ["Belijning gecontroleerd"],
   },
   {
     id: "obj-002",
+    projectId: "prj-maastricht",
     tenantId: "demo-tenant",
     createdAt: now,
     updatedAt: now,
     name: "Gemeentevak Centrum",
     type: "Gemeentevakken",
     status: "in_onderhoud",
+    polygon: [
+      { lat: 50.8511, lng: 5.6909 },
+      { lat: 50.8510, lng: 5.6921 },
+      { lat: 50.8502, lng: 5.6918 },
+      { lat: 50.8503, lng: 5.6907 },
+    ],
     historie: ["Melding onkruidgroei"],
     fotos: [],
     onderhoudslog: ["Beurt ingepland"],
   },
 ];
+
+export const initialProjects: ProjectItem[] = [
+  {
+    id: "prj-eemshaven",
+    tenantId: "demo-tenant",
+    createdAt: now,
+    updatedAt: now,
+    name: "Eemshaven",
+    description: "Gemeente A",
+    polygon: [
+      { lat: 53.443, lng: 6.834 },
+      { lat: 53.443, lng: 6.846 },
+      { lat: 53.437, lng: 6.846 },
+      { lat: 53.437, lng: 6.834 },
+    ],
+    allowedUserIds: ["usr-001", "usr-groningen"],
+  },
+  {
+    id: "prj-maastricht",
+    tenantId: "demo-tenant",
+    createdAt: now,
+    updatedAt: now,
+    name: "Maastricht Centrum",
+    description: "Gemeente B",
+    polygon: [
+      { lat: 50.854, lng: 5.685 },
+      { lat: 50.854, lng: 5.699 },
+      { lat: 50.847, lng: 5.699 },
+      { lat: 50.847, lng: 5.685 },
+    ],
+    allowedUserIds: ["usr-002"],
+  },
+];
+
+export const initialUserProjectAccess: Record<string, string[]> = {
+  "usr-001": ["prj-eemshaven"],
+  "usr-groningen": ["prj-eemshaven"],
+  "usr-002": ["prj-maastricht"],
+};
 
 export const initialAssets: AssetItem[] = [
   {

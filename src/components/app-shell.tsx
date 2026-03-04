@@ -8,7 +8,7 @@ import { UserRole } from "@/lib/domain";
 const links = [
   { href: "/", label: "Dashboard" },
   { href: "/login", label: "Login" },
-  { href: "/objecten", label: "Objecten" },
+  { href: "/projecten", label: "Projecten" },
   { href: "/planning", label: "Planning" },
   { href: "/assets", label: "Assets" },
   { href: "/taken", label: "Taken" },

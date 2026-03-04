@@ -10,12 +10,22 @@ export interface TenantScoped {
 
 export interface ObjectItem extends TenantScoped {
   id: string;
+  projectId: string;
   name: string;
   type: string;
   status: "actief" | "in_onderhoud" | "gesloten";
+  polygon: Array<{ lat: number; lng: number }>;
   historie: string[];
   fotos: string[];
   onderhoudslog: string[];
+}
+
+export interface ProjectItem extends TenantScoped {
+  id: string;
+  name: string;
+  description: string;
+  polygon: Array<{ lat: number; lng: number }>;
+  allowedUserIds: string[];
 }
 
 export interface AssetItem extends TenantScoped {
@@ -56,8 +66,11 @@ export interface TimeEntry extends TenantScoped {
 export const tenantRoot = (tenantId: string) => `tenants/${tenantId}`;
 export const tenantCollectionPath = (
   tenantId: string,
-  collection: "users" | "objects" | "assets" | "tasks" | "timeEntries"
+  collection: "users" | "objects" | "assets" | "tasks" | "timeEntries" | "projects"
 ) => `${tenantRoot(tenantId)}/${collection}`;
+
+export const projectObjectsCollectionPath = (tenantId: string, projectId: string) =>
+  `${tenantRoot(tenantId)}/projects/${projectId}/objects`;
 
 export const roleCapabilities: Record<UserRole, string[]> = {
   medewerker: ["taken.zien", "fotos.uploaden", "uren.registreren", "status.wijzigen"],

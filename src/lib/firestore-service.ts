@@ -1,14 +1,25 @@
-import { tenantCollectionPath } from "@/lib/domain";
+import {
+  projectObjectsCollectionPath,
+  tenantCollectionPath,
+} from "@/lib/domain";
 import { db } from "@/lib/firebase";
-import { AssetItem, ObjectItem, TaskItem, TimeEntry } from "@/lib/domain";
+import {
+  AssetItem,
+  ObjectItem,
+  ProjectItem,
+  TaskItem,
+  TimeEntry,
+} from "@/lib/domain";
 import {
   addDoc,
+  arrayUnion,
   collection,
   doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 
@@ -24,15 +35,6 @@ interface CreateTaskInput {
   description: string;
 }
 
-interface UpdateTaskPlanningInput {
-  tenantId: string;
-  taskId: string;
-  medewerker: string;
-  machine: string;
-  route: string;
-  herhaling: string;
-}
-
 interface RegisterTimeInput {
   tenantId: string;
   taskId: string;
@@ -45,6 +47,31 @@ interface CreateAssetInput {
   tenantId: string;
   name: string;
   category: "machine" | "robot" | "voertuig" | "gereedschap" | "materiaal";
+}
+
+interface UpdateTaskPlanningInput {
+  tenantId: string;
+  taskId: string;
+  medewerker: string;
+  machine: string;
+  route: string;
+  herhaling: string;
+}
+
+interface CreateProjectInput {
+  tenantId: string;
+  name: string;
+  description: string;
+  polygon: Array<{ lat: number; lng: number }>;
+  allowedUserIds: string[];
+}
+
+interface CreateProjectObjectInput {
+  tenantId: string;
+  projectId: string;
+  name: string;
+  type: string;
+  polygon: Array<{ lat: number; lng: number }>;
 }
 
 type SnapshotCallback<T> = (items: T[]) => void;
@@ -72,6 +99,65 @@ export async function createObject(input: CreateObjectInput) {
       name: input.name,
       type: input.type,
       status: "actief",
+      historie: [],
+      fotos: [],
+      onderhoudslog: [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function createProject(input: CreateProjectInput) {
+  if (!db) {
+    return null;
+  }
+
+  try {
+    const projectRef = await addDoc(
+      collection(db, tenantCollectionPath(input.tenantId, "projects")),
+      {
+        name: input.name,
+        description: input.description,
+        polygon: input.polygon,
+        allowedUserIds: input.allowedUserIds,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }
+    );
+
+    for (const userId of input.allowedUserIds) {
+      await setDoc(
+        doc(db, tenantCollectionPath(input.tenantId, "users"), userId),
+        {
+          projectIds: arrayUnion(projectRef.id),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    }
+
+    return projectRef.id;
+  } catch {
+    return null;
+  }
+}
+
+export async function createProjectObject(input: CreateProjectObjectInput) {
+  if (!db) {
+    return false;
+  }
+
+  try {
+    await addDoc(collection(db, projectObjectsCollectionPath(input.tenantId, input.projectId)), {
+      name: input.name,
+      type: input.type,
+      status: "actief",
+      polygon: input.polygon,
       historie: [],
       fotos: [],
       onderhoudslog: [],
@@ -217,12 +303,14 @@ export function subscribeObjects(tenantId: string, callback: SnapshotCallback<Ob
       const data = entry.data();
       return {
         id: entry.id,
+        projectId: String(data.projectId ?? ""),
         tenantId,
         createdAt: mapDate(data.createdAt),
         updatedAt: mapDate(data.updatedAt),
         name: String(data.name ?? "Onbekend object"),
         type: String(data.type ?? "Onbekend"),
         status: (data.status as ObjectItem["status"]) ?? "actief",
+        polygon: Array.isArray(data.polygon) ? data.polygon : [],
         historie: Array.isArray(data.historie) ? data.historie : [],
         fotos: Array.isArray(data.fotos) ? data.fotos : [],
         onderhoudslog: Array.isArray(data.onderhoudslog) ? data.onderhoudslog : [],
@@ -230,6 +318,90 @@ export function subscribeObjects(tenantId: string, callback: SnapshotCallback<Ob
     });
 
     callback(rows);
+  });
+}
+
+export function subscribeProjectObjects(
+  tenantId: string,
+  projectId: string,
+  callback: SnapshotCallback<ObjectItem>
+) {
+  if (!db) {
+    callback([]);
+    return () => undefined;
+  }
+
+  const objectsQuery = query(
+    collection(db, projectObjectsCollectionPath(tenantId, projectId)),
+    orderBy("createdAt", "desc")
+  );
+
+  return onSnapshot(objectsQuery, (snapshot) => {
+    const rows = snapshot.docs.map((entry) => {
+      const data = entry.data();
+      return {
+        id: entry.id,
+        projectId,
+        tenantId,
+        createdAt: mapDate(data.createdAt),
+        updatedAt: mapDate(data.updatedAt),
+        name: String(data.name ?? "Onbekend object"),
+        type: String(data.type ?? "Onbekend"),
+        status: (data.status as ObjectItem["status"]) ?? "actief",
+        polygon: Array.isArray(data.polygon) ? data.polygon : [],
+        historie: Array.isArray(data.historie) ? data.historie : [],
+        fotos: Array.isArray(data.fotos) ? data.fotos : [],
+        onderhoudslog: Array.isArray(data.onderhoudslog) ? data.onderhoudslog : [],
+      } satisfies ObjectItem;
+    });
+
+    callback(rows);
+  });
+}
+
+export function subscribeProjects(tenantId: string, callback: SnapshotCallback<ProjectItem>) {
+  if (!db) {
+    callback([]);
+    return () => undefined;
+  }
+
+  const projectsQuery = query(
+    collection(db, tenantCollectionPath(tenantId, "projects")),
+    orderBy("createdAt", "desc")
+  );
+
+  return onSnapshot(projectsQuery, (snapshot) => {
+    const rows = snapshot.docs.map((entry) => {
+      const data = entry.data();
+      return {
+        id: entry.id,
+        tenantId,
+        createdAt: mapDate(data.createdAt),
+        updatedAt: mapDate(data.updatedAt),
+        name: String(data.name ?? "Onbekend project"),
+        description: String(data.description ?? ""),
+        polygon: Array.isArray(data.polygon) ? data.polygon : [],
+        allowedUserIds: Array.isArray(data.allowedUserIds) ? data.allowedUserIds : [],
+      } satisfies ProjectItem;
+    });
+
+    callback(rows);
+  });
+}
+
+export function subscribeUserProjectIds(
+  tenantId: string,
+  userId: string,
+  callback: (projectIds: string[]) => void
+) {
+  if (!db) {
+    callback([]);
+    return () => undefined;
+  }
+
+  return onSnapshot(doc(db, tenantCollectionPath(tenantId, "users"), userId), (snapshot) => {
+    const payload = snapshot.data();
+    callback(Array.isArray(payload?.projectIds) ? payload.projectIds : []);
   });
 }
 
