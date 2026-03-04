@@ -1,13 +1,15 @@
 "use client";
 
 import { AppShell } from "@/components/app-shell";
+import { ModuleGuard } from "@/components/module-guard";
+import { useRuntime } from "@/components/runtime-context";
 import { ObjectItem } from "@/lib/domain";
 import { createObject } from "@/lib/firestore-service";
 import { initialObjects } from "@/lib/mvp-data";
 import { FormEvent, useState } from "react";
 
 export default function ObjectenPage() {
-  const [tenantId, setTenantId] = useState("demo-tenant");
+  const { tenantId } = useRuntime();
   const [name, setName] = useState("");
   const [type, setType] = useState("Sportvelden");
   const [items, setItems] = useState<ObjectItem[]>(initialObjects);
@@ -41,16 +43,11 @@ export default function ObjectenPage() {
 
   return (
     <AppShell>
+      <ModuleGuard module="objecten">
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Objecten</h2>
         <form onSubmit={handleSubmit} className="grid gap-2 rounded-lg border border-neutral-200 p-4 sm:grid-cols-2">
-          <input
-            value={tenantId}
-            onChange={(event) => setTenantId(event.target.value)}
-            className="rounded-md border border-neutral-300 px-3 py-2"
-            placeholder="Tenant ID"
-            required
-          />
+          <p className="rounded-md border border-neutral-200 px-3 py-2 text-sm text-neutral-700">Tenant: {tenantId}</p>
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -82,6 +79,7 @@ export default function ObjectenPage() {
           ))}
         </div>
       </section>
+      </ModuleGuard>
     </AppShell>
   );
 }

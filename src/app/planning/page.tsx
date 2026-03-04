@@ -1,6 +1,7 @@
 "use client";
 
 import { AppShell } from "@/components/app-shell";
+import { ModuleGuard } from "@/components/module-guard";
 import { useMemo, useState } from "react";
 
 type PlanningStatus = "nieuw" | "gepland" | "bezig" | "afgerond";
@@ -55,6 +56,7 @@ export default function PlanningPage() {
 
   return (
     <AppShell>
+      <ModuleGuard module="planning">
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Planning Board</h2>
         <p className="text-sm text-neutral-700">
@@ -94,6 +96,7 @@ export default function PlanningPage() {
           ))}
         </div>
       </section>
+      </ModuleGuard>
     </AppShell>
   );
 }

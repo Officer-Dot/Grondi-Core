@@ -1,9 +1,11 @@
 import { AppShell } from "@/components/app-shell";
+import { ModuleGuard } from "@/components/module-guard";
 import { initialAssets } from "@/lib/mvp-data";
 
 export default function AssetsPage() {
   return (
     <AppShell>
+      <ModuleGuard module="assets">
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Assets</h2>
         <p className="text-sm text-neutral-700">
@@ -23,6 +25,7 @@ export default function AssetsPage() {
           ))}
         </div>
       </section>
+      </ModuleGuard>
     </AppShell>
   );
 }

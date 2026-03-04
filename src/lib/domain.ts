@@ -61,3 +61,14 @@ export const roleCapabilities: Record<UserRole, string[]> = {
   beheerder: ["assets.beheren", "objecten.beheren", "rapportages.genereren"],
   admin: ["rechten.instellen", "vestigingen.beheren", "abonnementen.beheren"],
 };
+
+export const moduleAccess: Record<CoreModule, UserRole[]> = {
+  objecten: ["beheerder", "admin"],
+  planning: ["planner", "beheerder", "admin"],
+  assets: ["beheerder", "admin"],
+  taken: ["medewerker", "planner", "beheerder", "admin"],
+};
+
+export function canAccessModule(role: UserRole, module: CoreModule) {
+  return moduleAccess[module].includes(role);
+}
