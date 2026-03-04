@@ -75,8 +75,20 @@ Tenant-gebaseerde structuur:
 ```bash
 npm run lint
 npm run test:run
+npm run test:e2e
 npm run build
 ```
+
+## CI (GitHub Actions)
+
+Bij elke push/PR naar `main` draait automatisch:
+
+- Lint
+- Unit tests (Vitest)
+- E2E smoke test (Playwright)
+- Production build
+
+Workflowbestand: `.github/workflows/ci.yml`.
 
 ## GitHub
 
