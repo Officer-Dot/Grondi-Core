@@ -38,6 +38,10 @@ export interface TaskItem extends TenantScoped {
   fotoUrls: string[];
   materiaalgebruik: string[];
   afgerondDoor?: string;
+  medewerker?: string;
+  machine?: string;
+  route?: string;
+  herhaling?: string;
   auditlog: string[];
 }
 

@@ -24,6 +24,15 @@ interface CreateTaskInput {
   description: string;
 }
 
+interface UpdateTaskPlanningInput {
+  tenantId: string;
+  taskId: string;
+  medewerker: string;
+  machine: string;
+  route: string;
+  herhaling: string;
+}
+
 interface RegisterTimeInput {
   tenantId: string;
   taskId: string;
@@ -87,6 +96,10 @@ export async function createTask(input: CreateTaskInput) {
       description: input.description,
       checklist: [],
       status: "nieuw",
+      medewerker: "",
+      machine: "",
+      route: "",
+      herhaling: "",
       fotoUrls: [],
       materiaalgebruik: [],
       auditlog: ["Taak aangemaakt"],
@@ -167,6 +180,27 @@ export async function updateTaskStatus(
   }
 }
 
+export async function updateTaskPlanning(input: UpdateTaskPlanningInput) {
+  if (!db) {
+    return false;
+  }
+
+  try {
+    await updateDoc(doc(db, tenantCollectionPath(input.tenantId, "tasks"), input.taskId), {
+      medewerker: input.medewerker,
+      machine: input.machine,
+      route: input.route,
+      herhaling: input.herhaling,
+      updatedAt: serverTimestamp(),
+      auditlog: ["Planning bijgewerkt"],
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function subscribeObjects(tenantId: string, callback: SnapshotCallback<ObjectItem>) {
   if (!db) {
     callback([]);
@@ -222,6 +256,10 @@ export function subscribeTasks(tenantId: string, callback: SnapshotCallback<Task
         description: String(data.description ?? "Geen beschrijving"),
         checklist: Array.isArray(data.checklist) ? data.checklist : [],
         status: (data.status as TaskItem["status"]) ?? "nieuw",
+        medewerker: String(data.medewerker ?? ""),
+        machine: String(data.machine ?? ""),
+        route: String(data.route ?? ""),
+        herhaling: String(data.herhaling ?? ""),
         fotoUrls: Array.isArray(data.fotoUrls) ? data.fotoUrls : [],
         materiaalgebruik: Array.isArray(data.materiaalgebruik) ? data.materiaalgebruik : [],
         auditlog: Array.isArray(data.auditlog) ? data.auditlog : [],
