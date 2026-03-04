@@ -58,18 +58,22 @@ export async function createObject(input: CreateObjectInput) {
     return false;
   }
 
-  await addDoc(collection(db, tenantCollectionPath(input.tenantId, "objects")), {
-    name: input.name,
-    type: input.type,
-    status: "actief",
-    historie: [],
-    fotos: [],
-    onderhoudslog: [],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, tenantCollectionPath(input.tenantId, "objects")), {
+      name: input.name,
+      type: input.type,
+      status: "actief",
+      historie: [],
+      fotos: [],
+      onderhoudslog: [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  return true;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function createTask(input: CreateTaskInput) {
@@ -77,19 +81,23 @@ export async function createTask(input: CreateTaskInput) {
     return false;
   }
 
-  await addDoc(collection(db, tenantCollectionPath(input.tenantId, "tasks")), {
-    objectId: input.objectId,
-    description: input.description,
-    checklist: [],
-    status: "nieuw",
-    fotoUrls: [],
-    materiaalgebruik: [],
-    auditlog: ["Taak aangemaakt"],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, tenantCollectionPath(input.tenantId, "tasks")), {
+      objectId: input.objectId,
+      description: input.description,
+      checklist: [],
+      status: "nieuw",
+      fotoUrls: [],
+      materiaalgebruik: [],
+      auditlog: ["Taak aangemaakt"],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  return true;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function registerTime(input: RegisterTimeInput) {
@@ -97,16 +105,20 @@ export async function registerTime(input: RegisterTimeInput) {
     return false;
   }
 
-  await addDoc(collection(db, tenantCollectionPath(input.tenantId, "timeEntries")), {
-    taskId: input.taskId,
-    userId: input.userId,
-    minutes: input.minutes,
-    note: input.note,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, tenantCollectionPath(input.tenantId, "timeEntries")), {
+      taskId: input.taskId,
+      userId: input.userId,
+      minutes: input.minutes,
+      note: input.note,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  return true;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function createAsset(input: CreateAssetInput) {
@@ -114,19 +126,23 @@ export async function createAsset(input: CreateAssetInput) {
     return false;
   }
 
-  await addDoc(collection(db, tenantCollectionPath(input.tenantId, "assets")), {
-    name: input.name,
-    category: input.category,
-    status: "beschikbaar",
-    onderhoudsintervalDagen: 30,
-    storingen: 0,
-    qrCode: `QR-${Date.now()}`,
-    urenregistratie: 0,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, tenantCollectionPath(input.tenantId, "assets")), {
+      name: input.name,
+      category: input.category,
+      status: "beschikbaar",
+      onderhoudsintervalDagen: 30,
+      storingen: 0,
+      qrCode: `QR-${Date.now()}`,
+      urenregistratie: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  return true;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function updateTaskStatus(
@@ -138,13 +154,17 @@ export async function updateTaskStatus(
     return false;
   }
 
-  await updateDoc(doc(db, tenantCollectionPath(tenantId, "tasks"), taskId), {
-    status,
-    updatedAt: serverTimestamp(),
-    auditlog: [`Status gewijzigd naar ${status}`],
-  });
+  try {
+    await updateDoc(doc(db, tenantCollectionPath(tenantId, "tasks"), taskId), {
+      status,
+      updatedAt: serverTimestamp(),
+      auditlog: [`Status gewijzigd naar ${status}`],
+    });
 
-  return true;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function subscribeObjects(tenantId: string, callback: SnapshotCallback<ObjectItem>) {
