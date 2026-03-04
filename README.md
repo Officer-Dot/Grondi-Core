@@ -108,6 +108,12 @@ git push -u origin main
 3. Zet alle `NEXT_PUBLIC_FIREBASE_*` variabelen (inclusief `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`) in Project Settings.
 4. Deploy vanaf `main`.
 
+## Update log
+
+- 2026-03-04: Homepagina herwerkt naar een samenhangender dashboard-opzet met compacte hero, statuspaneel en snelle start.
+- 2026-03-04: Dark mode stabilisatie uitgevoerd (snellere theme-apply + expliciete `color-scheme`) en contrast van formuliercontrols verbeterd.
+- 2026-03-04: Logo visueel vernieuwd voor professionelere uitstraling.
+
 ## Productrichting na MVP
 
 - Weersafhankelijke planning

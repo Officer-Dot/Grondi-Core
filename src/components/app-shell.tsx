@@ -75,7 +75,7 @@ function ShellContent({ children }: { children: ReactNode }) {
           <button
             type="button"
             onClick={toggleTheme}
-            className="rounded-md border border-neutral-300 px-2 py-1 text-xs hover:bg-neutral-100 dark:border-neutral-600 dark:hover:bg-neutral-800"
+            className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-900 hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
           >
             {theme === "dark" ? "Light" : "Dark"}
           </button>
@@ -83,19 +83,19 @@ function ShellContent({ children }: { children: ReactNode }) {
             <input
               value={tenantId}
               onChange={(event) => setTenantId(event.target.value)}
-              className="rounded-md border border-neutral-300 px-2 py-1 dark:border-neutral-600 dark:bg-neutral-900"
+              className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-neutral-900 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100"
               placeholder="Tenant"
             />
             <input
               value={userId}
               onChange={(event) => setUserId(event.target.value)}
-              className="rounded-md border border-neutral-300 px-2 py-1 dark:border-neutral-600 dark:bg-neutral-900"
+              className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-neutral-900 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100"
               placeholder="Gebruiker"
             />
             <select
               value={role}
               onChange={(event) => setRole(event.target.value as UserRole)}
-              className="rounded-md border border-neutral-300 px-2 py-1 dark:border-neutral-600 dark:bg-neutral-900"
+              className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-neutral-900 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100"
             >
               {roleOptions.map((option) => (
                 <option key={option} value={option}>
