@@ -1,11 +1,13 @@
 "use client";
 
 import { AppShell } from "@/components/app-shell";
+import { ModuleGuard } from "@/components/module-guard";
 import { useRuntime } from "@/components/runtime-context";
 import { TaskItem } from "@/lib/domain";
-import { createTask } from "@/lib/firestore-service";
+import { createTask, subscribeTasks, updateTaskStatus } from "@/lib/firestore-service";
+import { db } from "@/lib/firebase";
 import { initialTasks } from "@/lib/mvp-data";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function TakenPage() {
   const { tenantId } = useRuntime();
@@ -13,6 +15,20 @@ export default function TakenPage() {
   const [description, setDescription] = useState("");
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [message, setMessage] = useState("Beheer de uitvoerlaag met taken en auditlog.");
+
+  useEffect(() => {
+    const unsubscribe = subscribeTasks(tenantId, (rows) => {
+      if (rows.length > 0) {
+        setTasks(rows);
+      } else if (!db) {
+        setTasks(initialTasks.filter((item) => item.tenantId === tenantId));
+      } else {
+        setTasks([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [tenantId]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,8 +57,20 @@ export default function TakenPage() {
     setMessage(created ? "Taak opgeslagen in Firestore." : "Taak lokaal toegevoegd (Firestore niet actief).");
   };
 
+  const handleStatusChange = async (taskId: string, status: TaskItem["status"]) => {
+    const updated = await updateTaskStatus(tenantId, taskId, status);
+
+    if (!updated) {
+      setTasks((current) =>
+        current.map((task) => (task.id === taskId ? { ...task, status, auditlog: [`Status gewijzigd naar ${status}`] } : task))
+      );
+      setMessage("Status lokaal bijgewerkt (Firestore niet actief).");
+    }
+  };
+
   return (
     <AppShell>
+      <ModuleGuard module="taken">
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Taken</h2>
         <form onSubmit={handleSubmit} className="grid gap-2 rounded-lg border border-neutral-200 p-4 sm:grid-cols-2">
@@ -74,10 +102,21 @@ export default function TakenPage() {
               <p className="text-sm text-neutral-700">
                 object: {task.objectId} • status: {task.status} • audit: {task.auditlog[0]}
               </p>
+              <select
+                value={task.status}
+                onChange={(event) => handleStatusChange(task.id, event.target.value as TaskItem["status"])}
+                className="mt-2 rounded-md border border-neutral-300 px-2 py-1 text-sm"
+              >
+                <option value="nieuw">nieuw</option>
+                <option value="gepland">gepland</option>
+                <option value="bezig">bezig</option>
+                <option value="afgerond">afgerond</option>
+              </select>
             </article>
           ))}
         </div>
       </section>
+      </ModuleGuard>
     </AppShell>
   );
 }

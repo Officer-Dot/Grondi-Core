@@ -2,8 +2,9 @@
 
 import { AppShell } from "@/components/app-shell";
 import { useRuntime } from "@/components/runtime-context";
-import { registerTime } from "@/lib/firestore-service";
-import { FormEvent, useState } from "react";
+import { registerTime, subscribeTimeEntries } from "@/lib/firestore-service";
+import { db } from "@/lib/firebase";
+import { FormEvent, useEffect, useState } from "react";
 
 interface Entry {
   id: string;
@@ -13,19 +14,46 @@ interface Entry {
   note: string;
 }
 
+const initialEntries: Entry[] = [];
+
 export default function UrenPage() {
   const { tenantId, userId } = useRuntime();
   const [taskId, setTaskId] = useState("tsk-001");
   const [minutes, setMinutes] = useState(60);
   const [note, setNote] = useState("");
-  const [entries, setEntries] = useState<Entry[]>([]);
+  const [entries, setEntries] = useState<Entry[]>(initialEntries);
   const [message, setMessage] = useState("Registreer uren per taak.");
+
+  useEffect(() => {
+    const unsubscribe = subscribeTimeEntries(tenantId, (rows) => {
+      if (rows.length > 0) {
+        setEntries(
+          rows.map((row) => ({
+            id: row.id,
+            taskId: row.taskId,
+            userId: row.userId,
+            minutes: row.minutes,
+            note: row.note,
+          }))
+        );
+      } else if (!db) {
+        setEntries(initialEntries);
+      } else {
+        setEntries([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [tenantId]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const created = await registerTime({ tenantId, taskId, userId, minutes, note });
-    setEntries((current) => [{ id: String(Date.now()), taskId, userId, minutes, note }, ...current]);
+
+    if (!created) {
+      setEntries((current) => [{ id: String(Date.now()), taskId, userId, minutes, note }, ...current]);
+    }
 
     setNote("");
     setMessage(created ? "Uren opgeslagen in Firestore." : "Uren lokaal toegevoegd (Firestore niet actief).");

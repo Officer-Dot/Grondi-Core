@@ -70,6 +70,14 @@ Tenant-gebaseerde structuur:
    npm run dev
    ```
 
+## Testen
+
+```bash
+npm run lint
+npm run test:run
+npm run build
+```
+
 ## GitHub
 
 ```bash

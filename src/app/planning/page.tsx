@@ -2,18 +2,14 @@
 
 import { AppShell } from "@/components/app-shell";
 import { ModuleGuard } from "@/components/module-guard";
+import {
+  groupPlanningTasks,
+  movePlanningTask,
+  planningColumns as columns,
+  PlanningStatus,
+  PlanningTask,
+} from "@/lib/planning";
 import { useMemo, useState } from "react";
-
-type PlanningStatus = "nieuw" | "gepland" | "bezig" | "afgerond";
-
-interface PlanningTask {
-  id: string;
-  title: string;
-  medewerker: string;
-  machine: string;
-  route: string;
-  status: PlanningStatus;
-}
 
 const initialTasks: PlanningTask[] = [
   {
@@ -34,24 +30,13 @@ const initialTasks: PlanningTask[] = [
   },
 ];
 
-const columns: PlanningStatus[] = ["nieuw", "gepland", "bezig", "afgerond"];
-
 export default function PlanningPage() {
   const [items, setItems] = useState<PlanningTask[]>(initialTasks);
 
-  const grouped = useMemo(
-    () =>
-      columns.reduce<Record<PlanningStatus, PlanningTask[]>>((acc, column) => {
-        acc[column] = items.filter((item) => item.status === column);
-        return acc;
-      }, { nieuw: [], gepland: [], bezig: [], afgerond: [] }),
-    [items]
-  );
+  const grouped = useMemo(() => groupPlanningTasks(items), [items]);
 
   const onDrop = (target: PlanningStatus, taskId: string) => {
-    setItems((current) =>
-      current.map((item) => (item.id === taskId ? { ...item, status: target } : item))
-    );
+    setItems((current) => movePlanningTask(current, taskId, target));
   };
 
   return (

@@ -4,9 +4,10 @@ import { AppShell } from "@/components/app-shell";
 import { ModuleGuard } from "@/components/module-guard";
 import { useRuntime } from "@/components/runtime-context";
 import { ObjectItem } from "@/lib/domain";
-import { createObject } from "@/lib/firestore-service";
+import { createObject, subscribeObjects } from "@/lib/firestore-service";
+import { db } from "@/lib/firebase";
 import { initialObjects } from "@/lib/mvp-data";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function ObjectenPage() {
   const { tenantId } = useRuntime();
@@ -14,6 +15,20 @@ export default function ObjectenPage() {
   const [type, setType] = useState("Sportvelden");
   const [items, setItems] = useState<ObjectItem[]>(initialObjects);
   const [message, setMessage] = useState("Maak objecten aan voor je operationele werkgebied.");
+
+  useEffect(() => {
+    const unsubscribe = subscribeObjects(tenantId, (rows) => {
+      if (rows.length > 0) {
+        setItems(rows);
+      } else if (!db) {
+        setItems(initialObjects.filter((item) => item.tenantId === tenantId));
+      } else {
+        setItems([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [tenantId]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
