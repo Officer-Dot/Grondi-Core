@@ -73,7 +73,7 @@ function ShellContent({ children }: { children: ReactNode }) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-md border border-neutral-300 bg-white px-3 py-1 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
+                className="gc-nav-button rounded-md border px-3 py-1"
               >
                 {isHomePage && link.href === "/login" ? "Klant" : link.label}
               </Link>

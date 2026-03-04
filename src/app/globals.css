@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   color-scheme: light;
   --bg: #ffffff;
@@ -66,6 +68,26 @@ html.dark .bg-white {
 
 html.dark .hover\:bg-neutral-100:hover {
   background-color: #262626 !important;
+}
+
+.gc-nav-button {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--surface-border);
+}
+
+.gc-nav-button:hover {
+  background: #f5f5f5;
+}
+
+html.dark .gc-nav-button:hover {
+  background: #262626;
+}
+
+.gc-logo-mark {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--surface-border);
 }
 
 input,
