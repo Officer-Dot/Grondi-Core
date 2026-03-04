@@ -79,38 +79,42 @@ function ShellContent({ children }: { children: ReactNode }) {
               </Link>
             ))}
           </nav>
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="gc-control rounded-md border px-2 py-1 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-800"
-          >
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
-          <div className="flex flex-wrap gap-2 text-xs">
-            <input
-              value={tenantId}
-              onChange={(event) => setTenantId(event.target.value)}
-              className="gc-control rounded-md border px-2 py-1"
-              placeholder="Tenant"
-            />
-            <input
-              value={userId}
-              onChange={(event) => setUserId(event.target.value)}
-              className="gc-control rounded-md border px-2 py-1"
-              placeholder="Gebruiker"
-            />
-            <select
-              value={role}
-              onChange={(event) => setRole(event.target.value as UserRole)}
-              className="gc-control rounded-md border px-2 py-1"
-            >
-              {roleOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
+          {!isHomePage ? (
+            <>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="gc-control rounded-md border px-2 py-1 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                {theme === "dark" ? "Light" : "Dark"}
+              </button>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <input
+                  value={tenantId}
+                  onChange={(event) => setTenantId(event.target.value)}
+                  className="gc-control rounded-md border px-2 py-1"
+                  placeholder="Tenant"
+                />
+                <input
+                  value={userId}
+                  onChange={(event) => setUserId(event.target.value)}
+                  className="gc-control rounded-md border px-2 py-1"
+                  placeholder="Gebruiker"
+                />
+                <select
+                  value={role}
+                  onChange={(event) => setRole(event.target.value as UserRole)}
+                  className="gc-control rounded-md border px-2 py-1"
+                >
+                  {roleOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : null}
         </div>
       </header>
       <div className="mx-auto max-w-5xl p-4">{children}</div>
