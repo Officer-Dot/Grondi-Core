@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { GrondiLogo } from "@/components/logo";
 import { useRuntime } from "@/components/runtime-context";
 import { useTheme } from "@/components/theme-provider";
@@ -37,10 +38,16 @@ const links: NavLink[] = [
 const roleOptions: UserRole[] = ["medewerker", "planner", "beheerder", "admin"];
 
 function ShellContent({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const { tenantId, userId, role, setTenantId, setUserId, setRole } = useRuntime();
   const { theme, toggleTheme } = useTheme();
 
   const visibleLinks = links.filter((link) => {
+    if (isHomePage) {
+      return link.href === "/demo" || link.href === "/login";
+    }
+
     if (!link.module && !link.capability) {
       return true;
     }
@@ -68,7 +75,7 @@ function ShellContent({ children }: { children: ReactNode }) {
                 href={link.href}
                 className="rounded-md border border-neutral-300 px-3 py-1 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:bg-neutral-800"
               >
-                {link.label}
+                {isHomePage && link.href === "/login" ? "Klant" : link.label}
               </Link>
             ))}
           </nav>

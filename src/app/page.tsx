@@ -1,7 +1,6 @@
 import { AppShell } from "@/components/app-shell";
 import { GrondiLogo } from "@/components/logo";
 import { firebaseInitialized } from "@/lib/firebase";
-import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -17,20 +16,9 @@ export default function HomePage() {
               GrondiCore verbindt projecten, objecten, planning, assets en taken in één overzichtelijke
               workflow voor uitvoerende teams.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href="/demo"
-                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-              >
-                Bekijk demo
-              </Link>
-              <Link
-                href="/klant"
-                className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-              >
-                Naar klantportaal
-              </Link>
-            </div>
+            <p className="gc-muted mt-4 text-sm">
+              Gebruik de navigatie bovenaan voor Demo en Klant login.
+            </p>
           </div>
 
           <aside className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-700">
@@ -63,29 +51,6 @@ export default function HomePage() {
           ))}
         </section>
 
-        <section className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-700 gc-surface">
-          <h2 className="font-semibold">Snelle start</h2>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <Link
-              href="/projecten"
-              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-            >
-              Open projecten
-            </Link>
-            <Link
-              href="/planning"
-              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-            >
-              Open planning
-            </Link>
-            <Link
-              href="/taken"
-              className="rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:hover:bg-neutral-800"
-            >
-              Open taken
-            </Link>
-          </div>
-        </section>
       </main>
     </AppShell>
   );
