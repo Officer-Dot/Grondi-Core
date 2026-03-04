@@ -33,6 +33,20 @@ body {
   color: var(--muted);
 }
 
+.gc-control {
+  background: #ffffff;
+  color: #171717;
+  border-color: #d4d4d4;
+  color-scheme: light;
+}
+
+html.dark .gc-control {
+  background: #171717;
+  color: #f5f5f5;
+  border-color: #525252;
+  color-scheme: dark;
+}
+
 .gc-spinner {
   width: 48px;
   height: 48px;
