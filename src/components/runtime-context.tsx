@@ -1,7 +1,9 @@
 "use client";
 
 import { UserRole, canAccessModule } from "@/lib/domain";
+import { auth } from "@/lib/firebase";
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface RuntimeState {
   tenantId: string;
@@ -62,6 +64,22 @@ export function RuntimeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
+
+  useEffect(() => {
+    if (!auth) {
+      return;
+    }
+
+    return onAuthStateChanged(auth, (user) => {
+      if (!user?.uid) {
+        return;
+      }
+
+      setState((current) =>
+        current.userId === user.uid ? current : { ...current, userId: user.uid }
+      );
+    });
+  }, []);
 
   const value = useMemo<RuntimeState>(
     () => ({

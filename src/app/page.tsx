@@ -36,7 +36,7 @@ export default function HomePage() {
           <aside className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-700">
             <h2 className="text-sm font-semibold">Platform status</h2>
             <p className="gc-muted mt-2 text-sm">
-              Firebase: {firebaseInitialized ? "Geconfigureerd" : "Niet geconfigureerd"}
+              Firebase: {firebaseInitialized ? "Auth + Firestore actief" : "Niet geconfigureerd"}
             </p>
             <div className="mt-4 space-y-2 text-sm">
               <p className="gc-muted">• Multi-tenant projecten</p>
