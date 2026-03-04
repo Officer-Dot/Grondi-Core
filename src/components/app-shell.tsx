@@ -14,6 +14,7 @@ const links = [
   { href: "/taken", label: "Taken" },
   { href: "/uren", label: "Uren" },
   { href: "/fotos", label: "Foto upload" },
+  { href: "/rapportage", label: "Rapportage" },
 ];
 
 const roleOptions: UserRole[] = ["medewerker", "planner", "beheerder", "admin"];

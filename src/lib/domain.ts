@@ -62,6 +62,21 @@ export const roleCapabilities: Record<UserRole, string[]> = {
   admin: ["rechten.instellen", "vestigingen.beheren", "abonnementen.beheren"],
 };
 
+export type RoleCapability =
+  | "taken.zien"
+  | "fotos.uploaden"
+  | "uren.registreren"
+  | "status.wijzigen"
+  | "planning.beheren"
+  | "taken.aanmaken"
+  | "medewerkers.koppelen"
+  | "assets.beheren"
+  | "objecten.beheren"
+  | "rapportages.genereren"
+  | "rechten.instellen"
+  | "vestigingen.beheren"
+  | "abonnementen.beheren";
+
 export const moduleAccess: Record<CoreModule, UserRole[]> = {
   objecten: ["beheerder", "admin"],
   planning: ["planner", "beheerder", "admin"],
@@ -71,4 +86,8 @@ export const moduleAccess: Record<CoreModule, UserRole[]> = {
 
 export function canAccessModule(role: UserRole, module: CoreModule) {
   return moduleAccess[module].includes(role);
+}
+
+export function hasCapability(role: UserRole, capability: RoleCapability) {
+  return roleCapabilities[role].includes(capability);
 }
