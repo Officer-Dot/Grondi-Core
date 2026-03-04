@@ -47,6 +47,40 @@ html.dark .gc-control {
   color-scheme: dark;
 }
 
+html.dark .text-neutral-700 {
+  color: #d4d4d4 !important;
+}
+
+html.dark .text-neutral-600 {
+  color: #a3a3a3 !important;
+}
+
+html.dark .border-neutral-200,
+html.dark .border-neutral-300 {
+  border-color: #525252 !important;
+}
+
+html.dark .bg-white {
+  background-color: #171717 !important;
+}
+
+html.dark .hover\:bg-neutral-100:hover {
+  background-color: #262626 !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--surface-border);
+}
+
+option {
+  background: var(--surface);
+  color: var(--fg);
+}
+
 .gc-spinner {
   width: 48px;
   height: 48px;
