@@ -10,6 +10,7 @@ export const initialObjects: ObjectItem[] = [
     createdAt: now,
     updatedAt: now,
     name: "Sportveld Noord",
+    category: "sport",
     type: "Sportvelden",
     status: "actief",
     polygon: [
@@ -29,6 +30,7 @@ export const initialObjects: ObjectItem[] = [
     createdAt: now,
     updatedAt: now,
     name: "Gemeentevak Centrum",
+    category: "groen",
     type: "Gemeentevakken",
     status: "in_onderhoud",
     polygon: [

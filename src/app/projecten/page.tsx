@@ -3,7 +3,7 @@
 import { AppShell } from "@/components/app-shell";
 import { ModuleGuard } from "@/components/module-guard";
 import { useRuntime } from "@/components/runtime-context";
-import { ObjectItem, ProjectItem } from "@/lib/domain";
+import { ObjectItem, ProjectItem, objectCategories } from "@/lib/domain";
 import {
   createProject,
   createProjectObject,
@@ -44,6 +44,7 @@ export default function ProjectenPage() {
   >([]);
 
   const [objectName, setObjectName] = useState("");
+  const [objectCategory, setObjectCategory] = useState<ObjectItem["category"]>("sport");
   const [objectType, setObjectType] = useState("Sportveld");
   const [polygonPoints, setPolygonPoints] = useState<Array<{ lat: number; lng: number }>>([]);
   const [message, setMessage] = useState("Projecten met toegangscontrole en polygon-objecten.");
@@ -193,6 +194,7 @@ export default function ProjectenPage() {
       tenantId,
       projectId,
       name: objectName,
+      category: objectCategory,
       type: objectType,
       polygon: polygonPoints,
     });
@@ -207,6 +209,7 @@ export default function ProjectenPage() {
           createdAt: now,
           updatedAt: now,
           name: objectName,
+          category: objectCategory,
           type: objectType,
           status: "actief",
           polygon: polygonPoints,
@@ -222,6 +225,7 @@ export default function ProjectenPage() {
     }
 
     setObjectName("");
+    setObjectCategory("sport");
     setObjectType("Sportveld");
     setPolygonPoints([]);
   };
@@ -317,6 +321,19 @@ export default function ProjectenPage() {
               placeholder="Objectnaam (bijv. Voetbalveld 1)"
               required
             />
+            <select
+              value={objectCategory}
+              onChange={(event) =>
+                setObjectCategory(event.target.value as ObjectItem["category"])
+              }
+              className="rounded-md border border-neutral-300 px-3 py-2"
+            >
+              {objectCategories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
             <input
               value={objectType}
               onChange={(event) => setObjectType(event.target.value)}
@@ -362,7 +379,7 @@ export default function ProjectenPage() {
                 <article key={object.id} className="rounded-md border border-neutral-200 p-3">
                   <h4 className="font-semibold">{object.name}</h4>
                   <p className="text-sm text-neutral-700">
-                    {object.type} • status: {object.status} • polygonpunten: {object.polygon.length}
+                    {object.category}/{object.type} • status: {object.status} • polygonpunten: {object.polygon.length}
                   </p>
                 </article>
               ))}

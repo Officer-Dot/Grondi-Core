@@ -7,12 +7,19 @@ describe("reporting helpers", () => {
       objects: [
         {
           id: "o1",
+          projectId: "p1",
           tenantId: "t1",
           createdAt: "2026-01-01",
           updatedAt: "2026-01-01",
           name: "Obj",
+          category: "groen",
           type: "Park",
           status: "actief",
+          polygon: [
+            { lat: 52.1, lng: 5.1 },
+            { lat: 52.2, lng: 5.1 },
+            { lat: 52.15, lng: 5.2 },
+          ],
           historie: [],
           fotos: [],
           onderhoudslog: [],

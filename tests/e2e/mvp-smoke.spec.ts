@@ -2,12 +2,14 @@ import { expect, test } from "@playwright/test";
 
 test("MVP smoke flow works", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Operationeel Kernplatform")).toBeVisible();
+  await expect(page.getByText(/Operationeel kernplatform/i)).toBeVisible();
 
   await page.locator("select").first().selectOption("admin");
 
   await page.getByRole("link", { name: "Projecten" }).click();
-  await expect(page.getByRole("heading", { name: "Projecten" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Projecten", exact: true })
+  ).toBeVisible();
 
   const uniqueProject = `E2E Project ${Date.now()}`;
   await page.getByPlaceholder("Projectnaam").fill(uniqueProject);

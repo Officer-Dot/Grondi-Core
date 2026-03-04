@@ -70,6 +70,7 @@ interface CreateProjectObjectInput {
   tenantId: string;
   projectId: string;
   name: string;
+  category: "sport" | "groen" | "infra" | "water" | "overig";
   type: string;
   polygon: Array<{ lat: number; lng: number }>;
 }
@@ -155,6 +156,7 @@ export async function createProjectObject(input: CreateProjectObjectInput) {
   try {
     await addDoc(collection(db, projectObjectsCollectionPath(input.tenantId, input.projectId)), {
       name: input.name,
+      category: input.category,
       type: input.type,
       status: "actief",
       polygon: input.polygon,
@@ -308,6 +310,7 @@ export function subscribeObjects(tenantId: string, callback: SnapshotCallback<Ob
         createdAt: mapDate(data.createdAt),
         updatedAt: mapDate(data.updatedAt),
         name: String(data.name ?? "Onbekend object"),
+        category: (data.category as ObjectItem["category"]) ?? "overig",
         type: String(data.type ?? "Onbekend"),
         status: (data.status as ObjectItem["status"]) ?? "actief",
         polygon: Array.isArray(data.polygon) ? data.polygon : [],
@@ -346,6 +349,7 @@ export function subscribeProjectObjects(
         createdAt: mapDate(data.createdAt),
         updatedAt: mapDate(data.updatedAt),
         name: String(data.name ?? "Onbekend object"),
+        category: (data.category as ObjectItem["category"]) ?? "overig",
         type: String(data.type ?? "Onbekend"),
         status: (data.status as ObjectItem["status"]) ?? "actief",
         polygon: Array.isArray(data.polygon) ? data.polygon : [],

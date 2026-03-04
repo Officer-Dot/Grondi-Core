@@ -12,6 +12,7 @@ export interface ObjectItem extends TenantScoped {
   id: string;
   projectId: string;
   name: string;
+  category: "sport" | "groen" | "infra" | "water" | "overig";
   type: string;
   status: "actief" | "in_onderhoud" | "gesloten";
   polygon: Array<{ lat: number; lng: number }>;
@@ -108,3 +109,11 @@ export function canAccessModule(role: UserRole, module: CoreModule) {
 export function hasCapability(role: UserRole, capability: RoleCapability) {
   return roleCapabilities[role].includes(capability);
 }
+
+export const objectCategories: Array<ObjectItem["category"]> = [
+  "sport",
+  "groen",
+  "infra",
+  "water",
+  "overig",
+];
