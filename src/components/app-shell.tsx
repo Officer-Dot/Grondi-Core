@@ -39,12 +39,20 @@ const roleOptions: UserRole[] = ["medewerker", "planner", "beheerder", "admin"];
 
 function ShellContent({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const isPublicMarketingPage = [
+    "/",
+    "/wat-is-het",
+    "/wat-kan-het",
+    "/waarom",
+    "/hoe",
+    "/wanneer",
+    "/kosten",
+  ].includes(pathname);
   const { tenantId, userId, role, setTenantId, setUserId, setRole } = useRuntime();
   const { theme, toggleTheme } = useTheme();
 
   const visibleLinks = links.filter((link) => {
-    if (isHomePage) {
+    if (isPublicMarketingPage) {
       return link.href === "/demo" || link.href === "/login";
     }
 
@@ -75,11 +83,11 @@ function ShellContent({ children }: { children: ReactNode }) {
                 href={link.href}
                 className="gc-nav-button rounded-md border px-3 py-1"
               >
-                {isHomePage && link.href === "/login" ? "Klant" : link.label}
+                {isPublicMarketingPage && link.href === "/login" ? "Klant" : link.label}
               </Link>
             ))}
           </nav>
-          {!isHomePage ? (
+          {!isPublicMarketingPage ? (
             <>
               <button
                 type="button"

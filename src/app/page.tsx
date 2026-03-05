@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/app-shell";
 import { GrondiLogo } from "@/components/logo";
 import { firebaseInitialized } from "@/lib/firebase";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -49,6 +50,32 @@ export default function HomePage() {
               <p className="gc-muted mt-1 text-sm">{subtitle}</p>
             </article>
           ))}
+        </section>
+
+        <section className="rounded-xl border border-neutral-200 p-6 dark:border-neutral-700 gc-surface">
+          <h2 className="text-xl font-semibold">Wat je wil weten</h2>
+          <p className="gc-muted mt-2 text-sm">
+            Bekijk de belangrijkste onderwerpen over GrondiCore, van waardepropositie tot
+            implementatie en kosten.
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Wat is het", "/wat-is-het"],
+              ["Wat kan het", "/wat-kan-het"],
+              ["Waarom", "/waarom"],
+              ["Hoe", "/hoe"],
+              ["Wanneer", "/wanneer"],
+              ["Kosten", "/kosten"],
+            ].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="gc-nav-button rounded-md border px-3 py-2 text-sm"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </section>
 
       </main>

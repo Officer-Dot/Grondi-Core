@@ -24,6 +24,17 @@ Deze eerste MVP bevat:
 - Urenregistratie
 - Foto upload
 
+## Publieke informatiepagina's
+
+De home is uitgebreid met extra pagina's voor oriëntatie en sales:
+
+- `/wat-is-het`
+- `/wat-kan-het`
+- `/waarom`
+- `/hoe`
+- `/wanneer`
+- `/kosten`
+
 ## Core structuur
 
 - Objecten: historie, foto’s, taken, status, onderhoudslog
@@ -69,6 +80,26 @@ Tenant-gebaseerde structuur:
    ```bash
    npm run dev
    ```
+
+## Firebase CLI setup
+
+In deze repository is Firebase CLI geconfigureerd met:
+
+- `.firebaserc` (project: `grondi-core`)
+- `firebase.json` (Firestore/Storage rules + emulators)
+- `firestore.rules`
+- `firestore.indexes.json`
+- `storage.rules`
+
+Belangrijke commando's:
+
+```bash
+npm run firebase:emulators
+npm run firebase:deploy:rules
+```
+
+Let op: Firestore rules deploy werkt direct; Storage rules deploy vereist dat Firebase Storage
+éénmalig is geactiveerd in de Firebase Console (project `grondi-core`).
 
 ## Testen
 

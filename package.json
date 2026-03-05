@@ -9,7 +9,9 @@
     "lint": "eslint",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "firebase:emulators": "firebase emulators:start --project grondi-core",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage --project grondi-core"
   },
   "dependencies": {
     "firebase": "^11.10.0",
